@@ -15,7 +15,7 @@ const About: React.FC = () => {
             
             {/* IMAGE 1: Blue Cape Fade */}
             <LocalImage 
-              src="/blue-cape.jpg" 
+              src="blue-cape.jpg" 
               alt="Side profile skin fade with blue cape" 
               className="rounded-lg shadow-lg w-full h-96 object-cover mt-12 bg-gray-100"
               aos="fade-right"
@@ -24,7 +24,7 @@ const About: React.FC = () => {
             
             {/* IMAGE 2: Red Jersey Texture */}
             <LocalImage 
-              src="/red-jersey.jpg" 
+              src="red-jersey.jpg" 
               alt="Back view textured haircut with red jersey" 
               className="rounded-lg shadow-lg w-full h-96 object-cover bg-gray-100"
               aos="fade-right"

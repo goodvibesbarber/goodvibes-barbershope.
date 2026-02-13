@@ -7,7 +7,7 @@ const Hero: React.FC = () => {
     <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden bg-vibes-white">
       <div className="absolute inset-0 z-0 opacity-5">
         <LocalImage 
-            src="/hero-bg.jpg" 
+            src="hero-bg.jpg" 
             alt="Background Texture"
             className="w-full h-full object-cover"
         />
@@ -65,7 +65,7 @@ const Hero: React.FC = () => {
               
               {/* Main Profile Image with Tap-to-Select functionality */}
               <LocalImage 
-                src="/hero-profile.jpg" 
+                src="hero-profile.jpg" 
                 alt="Simonyo Barber" 
                 className="relative w-full h-full object-cover rounded-2xl shadow-2xl"
               />
