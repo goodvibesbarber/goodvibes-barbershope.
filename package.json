@@ -1,7 +1,7 @@
 {
   "name": "good-vibes-barber-shop",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.39.7",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "lucide-react": "^0.563.0",
