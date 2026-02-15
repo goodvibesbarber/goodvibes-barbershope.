@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
-// I have updated these with the keys from your screenshot
+// Direct connection using the keys you provided
 const supabaseUrl = "https://fivjtiaayguuejbtreku.supabase.co"; 
 const supabaseAnonKey = "sb_publishable_A0_Yy-Zbbp2JjJV4Za4UXA_plSlk6mS87_Wd96Yh6yqN7-9f7p0yT8E1h7Q";
-
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export default function BookingForm() {
@@ -13,7 +12,7 @@ export default function BookingForm() {
   const [selectedDate, setSelectedDate] = useState('');
   const [bookedTimes, setBookedTimes] = useState<string[]>([]);
 
-  // TYPO FIXED: Removed the dot after "new" to fix the white screen
+  // Fixed the Date typo to prevent white screen
   const today = new Date().toISOString().split('T')[0];
 
   const timeSlots = ["10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
@@ -47,7 +46,7 @@ export default function BookingForm() {
         .eq('booking_date', data.date).eq('booking_time', data.time);
 
       if (existing && existing.length > 0) {
-        setStatus("❌ Slot taken! Pick another time.");
+        setStatus("❌ This time is already taken.");
         setLoading(false);
         return;
       }
@@ -60,37 +59,25 @@ export default function BookingForm() {
       if (error) throw error;
       setStatus("SUCCESS");
     } catch (err) {
-      setStatus("⚠️ Connection error. Try again!");
+      setStatus("⚠️ Error connecting to database.");
     }
     setLoading(false);
   };
 
   if (status === "SUCCESS") {
     return (
-      <div className="flex justify-center items-center py-20 bg-white">
-        <div className="bg-white rounded-3xl shadow-2xl p-12 text-center border border-gray-100">
-          <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg className="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path>
-            </svg>
-          </div>
-          <h3 className="text-3xl font-bold mb-2">Booking Sent!</h3>
-          <p className="text-gray-500 mb-6">Simonyo will see you soon.</p>
-          <button onClick={() => setStatus('')} className="text-[#c5a059] font-bold uppercase text-xs">Book another</button>
-        </div>
+      <div style={{padding: '50px', textAlign: 'center', background: 'white'}}>
+        <h2 style={{color: '#c5a059'}}>Booking Confirmed!</h2>
+        <p>Thank you. Simonyo will see you soon.</p>
+        <button onClick={() => setStatus('')} style={{background: 'black', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer'}}>
+          Book Another
+        </button>
       </div>
     );
   }
 
   return (
-    <section className="bg-gray-50 py-24 px-4">
-      <div className="max-w-xl mx-auto bg-white p-10 rounded-[2rem] shadow-xl border border-gray-100">
-        <div className="text-center mb-10">
-          <span className="text-[#c5a059] text-xs font-bold tracking-widest uppercase">Appointments</span>
-          <h2 className="text-4xl font-serif font-black text-black mt-2">Reserve Your Chair</h2>
-        </div>
-        
-        <form onSubmit={handleBooking} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input name="name" placeholder="Full Name" required className="w-full p-4 bg-gray-50 rounded-xl outline-none" />
-            <input name="phone" placeholder="Phone" required className="w
+    <div style={{maxWidth: '500px', margin: '40px auto', padding: '20px', background: 'white', borderRadius: '20px', boxShadow: '0 10px 30px rgba(0,0,0,0.1)', fontFamily: 'sans-serif'}}>
+      <h2 style={{textAlign: 'center', marginBottom: '30px'}}>Reserve Your Chair</h2>
+      <form onSubmit={handleBooking} style={{display: 'flex', flexDirection: 'column', gap: '15px'}}>
+        <input name="name" placeholder="Full Name" required style={{padding: '12
