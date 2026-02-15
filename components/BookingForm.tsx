@@ -11,7 +11,7 @@ export default function BookingForm() {
   const [selectedDate, setSelectedDate] = useState('');
   const [bookedTimes, setBookedTimes] = useState<string[]>([]);
 
-  // Blocks past dates
+  // Corrected line: no dot after "new"
   const today = new Date().toISOString().split('T')[0];
 
   const timeSlots = [
@@ -19,7 +19,6 @@ export default function BookingForm() {
     "14:00", "15:00", "16:00", "17:00"
   ];
 
-  // Live Scanner for availability
   useEffect(() => {
     async function checkAvailability() {
       if (!selectedDate) return;
@@ -89,6 +88,7 @@ export default function BookingForm() {
             <div className="mt-8">
               <p className="text-[#c5a059] uppercase text-[10px] font-bold tracking-widest mb-4">Contact</p>
               <p className="text-sm font-medium mb-1">+65 8727 3741</p>
+              <p className="text-sm text-gray-400">@GoodVibesBarberShop</p>
             </div>
           </div>
           <div className="p-12 md:w-2/3 flex flex-col items-center justify-center text-center bg-white">
@@ -98,7 +98,8 @@ export default function BookingForm() {
               </svg>
             </div>
             <h3 className="text-3xl font-bold text-gray-900 mb-2">Booking Sent!</h3>
-            <button onClick={() => {setStatus(''); setSelectedDate('');}} className="text-[#c5a059] font-bold uppercase text-xs">Book another</button>
+            <p className="text-gray-500 mb-8 text-sm px-4 text-center">Simonyo will confirm your appointment shortly.</p>
+            <button onClick={() => {setStatus(''); setSelectedDate('');}} className="text-[#c5a059] font-bold uppercase text-xs hover:underline">Book another</button>
           </div>
         </div>
       </div>
@@ -115,10 +116,10 @@ export default function BookingForm() {
         
         <form onSubmit={handleBooking} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input name="name" type="text" placeholder="Full Name" required className="w-full p-4 bg-gray-50 rounded-xl" />
-            <input name="phone" type="tel" placeholder="Phone Number" required className="w-full p-4 bg-gray-50 rounded-xl" />
+            <input name="name" type="text" placeholder="Full Name" required className="w-full p-4 bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-[#c5a059]" />
+            <input name="phone" type="tel" placeholder="Phone Number" required className="w-full p-4 bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-[#c5a059]" />
           </div>
-          <input name="email" type="email" placeholder="Email Address" required className="w-full p-4 bg-gray-50 rounded-xl" />
+          <input name="email" type="email" placeholder="Email Address" required className="w-full p-4 bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-[#c5a059]" />
           
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
@@ -129,12 +130,12 @@ export default function BookingForm() {
                 min={today}
                 required 
                 onChange={(e) => setSelectedDate(e.target.value)}
-                className="w-full p-4 bg-gray-50 rounded-xl" 
+                className="w-full p-4 bg-gray-50 rounded-xl outline-none" 
               />
             </div>
             <div className="space-y-1">
               <label className="text-[10px] font-bold text-gray-400 uppercase ml-1">Time</label>
-              <select name="time" required className="w-full p-4 bg-gray-50 rounded-xl">
+              <select name="time" required className="w-full p-4 bg-gray-50 rounded-xl outline-none">
                 <option value="" disabled selected>Pick a time</option>
                 {timeSlots.map((time) => {
                   const isBooked = bookedTimes.includes(time);
@@ -150,7 +151,7 @@ export default function BookingForm() {
 
           <div className="space-y-1">
             <label className="text-[10px] font-bold text-gray-400 uppercase ml-1">Service</label>
-            <select name="service" required className="w-full p-4 bg-gray-50 rounded-xl">
+            <select name="service" required className="w-full p-4 bg-gray-50 rounded-xl outline-none">
                 <option value="Classic Haircut">Classic Haircut</option>
                 <option value="Signature Fade">Signature Fade</option>
                 <option value="Beard Trim">Beard Trim</option>
@@ -158,7 +159,7 @@ export default function BookingForm() {
             </select>
           </div>
           
-          <button type="submit" disabled={loading} className="w-full bg-black text-white p-5 rounded-xl font-bold uppercase hover:bg-[#c5a059] transition-all mt-4">
+          <button type="submit" disabled={loading} className="w-full bg-black text-white p-5 rounded-xl font-bold uppercase hover:bg-[#c5a059] transition-all mt-4 shadow-lg">
             {loading ? "Checking..." : "Confirm Booking"}
           </button>
           
