@@ -11,7 +11,7 @@ export default function BookingForm() {
   const [selectedDate, setSelectedDate] = useState('');
   const [bookedTimes, setBookedTimes] = useState<string[]>([]);
 
-  // Corrected line: no dot after "new"
+  // Corrected: No dot after 'new'
   const today = new Date().toISOString().split('T')[0];
 
   const timeSlots = [
@@ -19,6 +19,7 @@ export default function BookingForm() {
     "14:00", "15:00", "16:00", "17:00"
   ];
 
+  // Live Scanner logic to find busy slots
   useEffect(() => {
     async function checkAvailability() {
       if (!selectedDate) return;
@@ -76,6 +77,7 @@ export default function BookingForm() {
     setLoading(false);
   };
 
+  // SUCCESS CARD VIEW
   if (status === "SUCCESS") {
     return (
       <div className="flex justify-center items-center py-20 px-4 bg-white" data-aos="zoom-in">
@@ -88,7 +90,6 @@ export default function BookingForm() {
             <div className="mt-8">
               <p className="text-[#c5a059] uppercase text-[10px] font-bold tracking-widest mb-4">Contact</p>
               <p className="text-sm font-medium mb-1">+65 8727 3741</p>
-              <p className="text-sm text-gray-400">@GoodVibesBarberShop</p>
             </div>
           </div>
           <div className="p-12 md:w-2/3 flex flex-col items-center justify-center text-center bg-white">
@@ -98,14 +99,15 @@ export default function BookingForm() {
               </svg>
             </div>
             <h3 className="text-3xl font-bold text-gray-900 mb-2">Booking Sent!</h3>
-            <p className="text-gray-500 mb-8 text-sm px-4 text-center">Simonyo will confirm your appointment shortly.</p>
-            <button onClick={() => {setStatus(''); setSelectedDate('');}} className="text-[#c5a059] font-bold uppercase text-xs hover:underline">Book another</button>
+            <p className="text-gray-500 mb-8 text-sm px-4">Simonyo will confirm your appointment shortly.</p>
+            <button onClick={() => {setStatus(''); setSelectedDate('');}} className="text-[#c5a059] font-bold uppercase text-xs">Book another</button>
           </div>
         </div>
       </div>
     );
   }
 
+  // FORM VIEW
   return (
     <section className="bg-gray-50 py-24 px-4">
       <div className="max-w-xl mx-auto bg-white p-10 rounded-[2rem] shadow-xl border border-gray-100" data-aos="fade-up">
@@ -116,10 +118,10 @@ export default function BookingForm() {
         
         <form onSubmit={handleBooking} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input name="name" type="text" placeholder="Full Name" required className="w-full p-4 bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-[#c5a059]" />
-            <input name="phone" type="tel" placeholder="Phone Number" required className="w-full p-4 bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-[#c5a059]" />
+            <input name="name" type="text" placeholder="Full Name" required className="w-full p-4 bg-gray-50 rounded-xl outline-none" />
+            <input name="phone" type="tel" placeholder="Phone Number" required className="w-full p-4 bg-gray-50 rounded-xl outline-none" />
           </div>
-          <input name="email" type="email" placeholder="Email Address" required className="w-full p-4 bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-[#c5a059]" />
+          <input name="email" type="email" placeholder="Email Address" required className="w-full p-4 bg-gray-50 rounded-xl outline-none" />
           
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
@@ -127,7 +129,7 @@ export default function BookingForm() {
               <input 
                 name="date" 
                 type="date" 
-                min={today}
+                min={today} // Blocks past dates
                 required 
                 onChange={(e) => setSelectedDate(e.target.value)}
                 className="w-full p-4 bg-gray-50 rounded-xl outline-none" 
@@ -159,7 +161,7 @@ export default function BookingForm() {
             </select>
           </div>
           
-          <button type="submit" disabled={loading} className="w-full bg-black text-white p-5 rounded-xl font-bold uppercase hover:bg-[#c5a059] transition-all mt-4 shadow-lg">
+          <button type="submit" disabled={loading} className="w-full bg-black text-white p-5 rounded-xl font-bold uppercase hover:bg-[#c5a059] transition-all mt-4">
             {loading ? "Checking..." : "Confirm Booking"}
           </button>
           
