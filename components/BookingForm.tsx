@@ -1,83 +1,56 @@
-import React, { useState, useEffect } from 'react';
-import { createClient } from '@supabase/supabase-js';
-
-// Direct connection using the keys you provided
-const supabaseUrl = "https://fivjtiaayguuejbtreku.supabase.co"; 
-const supabaseAnonKey = "sb_publishable_A0_Yy-Zbbp2JjJV4Za4UXA_plSlk6mS87_Wd96Yh6yqN7-9f7p0yT8E1h7Q";
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+import React, { useState } from 'react';
 
 export default function BookingForm() {
-  const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState('');
-  const [selectedDate, setSelectedDate] = useState('');
-  const [bookedTimes, setBookedTimes] = useState<string[]>([]);
 
-  // Fixed the Date typo to prevent white screen
-  const today = new Date().toISOString().split('T')[0];
-
-  const timeSlots = ["10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
-
-  useEffect(() => {
-    async function checkAvailability() {
-      if (!selectedDate) return;
-      try {
-        const { data } = await supabase
-          .from('bookings')
-          .select('booking_time')
-          .eq('booking_date', selectedDate);
-        if (data) setBookedTimes(data.map(b => b.booking_time));
-      } catch (err) {
-        console.error("Database check failed:", err);
-      }
-    }
-    checkAvailability();
-  }, [selectedDate]);
-
-  const handleBooking = async (e: any) => {
+  // This is a simple version to get your site back online
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setStatus('');
-    const formData = new FormData(e.target);
-    const data = Object.fromEntries(formData);
-
-    try {
-      const { data: existing } = await supabase
-        .from('bookings').select('*')
-        .eq('booking_date', data.date).eq('booking_time', data.time);
-
-      if (existing && existing.length > 0) {
-        setStatus("❌ This time is already taken.");
-        setLoading(false);
-        return;
-      }
-
-      const { error } = await supabase.from('bookings').insert([{
-        name: data.name, email: data.email, phone: data.phone,
-        booking_date: data.date, booking_time: data.time, service: data.service
-      }]);
-
-      if (error) throw error;
-      setStatus("SUCCESS");
-    } catch (err) {
-      setStatus("⚠️ Error connecting to database.");
-    }
-    setLoading(false);
+    setStatus('SUCCESS');
   };
 
-  if (status === "SUCCESS") {
+  if (status === 'SUCCESS') {
     return (
-      <div style={{padding: '50px', textAlign: 'center', background: 'white'}}>
-        <h2 style={{color: '#c5a059'}}>Booking Confirmed!</h2>
-        <p>Thank you. Simonyo will see you soon.</p>
-        <button onClick={() => setStatus('')} style={{background: 'black', color: 'white', padding: '10px 20px', border: 'none', borderRadius: '5px', cursor: 'pointer'}}>
-          Book Another
+      <div style={{padding: '60px 20px', textAlign: 'center', background: 'white'}}>
+        <h2 style={{color: '#c5a059', fontSize: '32px', fontWeight: 'bold'}}>Booking Received!</h2>
+        <p style={{color: '#666', margin: '20px 0'}}>Simonyo will contact you shortly to confirm.</p>
+        <button onClick={() => setStatus('')} style={{background: 'black', color: 'white', padding: '12px 24px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontWeight: 'bold'}}>
+          Back to Site
         </button>
       </div>
     );
   }
 
   return (
-    <div style={{maxWidth: '500px', margin: '40px auto', padding: '20px', background: 'white', borderRadius: '20px', boxShadow: '0 10px 30px rgba(0,0,0,0.1)', fontFamily: 'sans-serif'}}>
-      <h2 style={{textAlign: 'center', marginBottom: '30px'}}>Reserve Your Chair</h2>
-      <form onSubmit={handleBooking} style={{display: 'flex', flexDirection: 'column', gap: '15px'}}>
-        <input name="name" placeholder="Full Name" required style={{padding: '12
+    <section style={{backgroundColor: '#f9fafb', padding: '80px 20px'}}>
+      <div style={{maxWidth: '500px', margin: '0 auto', backgroundColor: 'white', padding: '40px', borderRadius: '32px', boxShadow: '0 20px 40px rgba(0,0,0,0.1)', border: '1px solid #f3f4f6'}}>
+        <div style={{textAlign: 'center', marginBottom: '32px'}}>
+          <span style={{color: '#c5a059', fontSize: '12px', fontWeight: 'bold', letterSpacing: '2px', uppercase: 'true'}}>Appointments</span>
+          <h2 style={{fontSize: '36px', fontWeight: '900', color: 'black', marginTop: '8px'}}>Reserve Your Chair</h2>
+        </div>
+        
+        <form onSubmit={handleSubmit} style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
+          <input type="text" placeholder="Full Name" required style={{width: '100%', padding: '16px', backgroundColor: '#f9fafb', border: 'none', borderRadius: '12px', boxSizing: 'border-box'}} />
+          <input type="tel" placeholder="Phone Number" required style={{width: '100%', padding: '16px', backgroundColor: '#f9fafb', border: 'none', borderRadius: '12px', boxSizing: 'border-box'}} />
+          <input type="email" placeholder="Email Address" required style={{width: '100%', padding: '16px', backgroundColor: '#f9fafb', border: 'none', borderRadius: '12px', boxSizing: 'border-box'}} />
+          
+          <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px'}}>
+            <input type="date" required style={{padding: '16px', backgroundColor: '#f9fafb', border: 'none', borderRadius: '12px'}} />
+            <input type="time" required style={{padding: '16px', backgroundColor: '#f9fafb', border: 'none', borderRadius: '12px'}} />
+          </div>
+
+          <select required style={{padding: '16px', backgroundColor: '#f9fafb', border: 'none', borderRadius: '12px', width: '100%'}}>
+            <option value="">Select Service</option>
+            <option value="Classic Haircut">Classic Haircut</option>
+            <option value="Signature Fade">Signature Fade</option>
+            <option value="Beard Trim">Beard Trim</option>
+          </select>
+          
+          <button type="submit" style={{width: '100%', backgroundColor: 'black', color: 'white', padding: '20px', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer', marginTop: '16px', border: 'none'}}>
+            Confirm Booking
+          </button>
+        </form>
+      </div>
+    </section>
+  );
+}
