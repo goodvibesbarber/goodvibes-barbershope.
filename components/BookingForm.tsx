@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 export default function BookingForm() {
   const [status, setStatus] = useState('');
 
-  // This is a simple version to get your site back online
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('SUCCESS');
@@ -11,42 +10,52 @@ export default function BookingForm() {
 
   if (status === 'SUCCESS') {
     return (
-      <div style={{padding: '60px 20px', textAlign: 'center', background: 'white'}}>
-        <h2 style={{color: '#c5a059', fontSize: '32px', fontWeight: 'bold'}}>Booking Received!</h2>
-        <p style={{color: '#666', margin: '20px 0'}}>Simonyo will contact you shortly to confirm.</p>
-        <button onClick={() => setStatus('')} style={{background: 'black', color: 'white', padding: '12px 24px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontWeight: 'bold'}}>
-          Back to Site
-        </button>
+      <div className="flex justify-center items-center py-20 bg-white">
+        <div className="bg-white rounded-3xl shadow-2xl p-12 text-center border border-gray-100 max-w-lg w-full">
+          <h3 className="text-3xl font-bold text-gray-900 mb-4">Booking Received!</h3>
+          <p className="text-gray-500 mb-8">Simonyo will contact you shortly to confirm your spot.</p>
+          <button 
+            onClick={() => setStatus('')} 
+            className="bg-black text-white px-8 py-3 rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-[#c5a059] transition-colors"
+          >
+            Back to Site
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <section style={{backgroundColor: '#f9fafb', padding: '80px 20px'}}>
-      <div style={{maxWidth: '500px', margin: '0 auto', backgroundColor: 'white', padding: '40px', borderRadius: '32px', boxShadow: '0 20px 40px rgba(0,0,0,0.1)', border: '1px solid #f3f4f6'}}>
-        <div style={{textAlign: 'center', marginBottom: '32px'}}>
-          <span style={{color: '#c5a059', fontSize: '12px', fontWeight: 'bold', letterSpacing: '2px', uppercase: 'true'}}>Appointments</span>
-          <h2 style={{fontSize: '36px', fontWeight: '900', color: 'black', marginTop: '8px'}}>Reserve Your Chair</h2>
+    <section className="bg-gray-50 py-24 px-4">
+      <div className="max-w-xl mx-auto bg-white p-10 rounded-[2rem] shadow-xl border border-gray-100">
+        <div className="text-center mb-10">
+          <span className="text-[#c5a059] text-xs font-bold tracking-widest uppercase">Appointments</span>
+          <h2 className="text-4xl font-serif font-black text-black mt-2">Reserve Your Chair</h2>
         </div>
         
-        <form onSubmit={handleSubmit} style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
-          <input type="text" placeholder="Full Name" required style={{width: '100%', padding: '16px', backgroundColor: '#f9fafb', border: 'none', borderRadius: '12px', boxSizing: 'border-box'}} />
-          <input type="tel" placeholder="Phone Number" required style={{width: '100%', padding: '16px', backgroundColor: '#f9fafb', border: 'none', borderRadius: '12px', boxSizing: 'border-box'}} />
-          <input type="email" placeholder="Email Address" required style={{width: '100%', padding: '16px', backgroundColor: '#f9fafb', border: 'none', borderRadius: '12px', boxSizing: 'border-box'}} />
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input placeholder="Full Name" required className="w-full p-4 bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-[#c5a059]" />
+            <input placeholder="Phone Number" required className="w-full p-4 bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-[#c5a059]" />
+          </div>
+          <input type="email" placeholder="Email Address" required className="w-full p-4 bg-gray-50 rounded-xl outline-none focus:ring-2 focus:ring-[#c5a059]" />
           
-          <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px'}}>
-            <input type="date" required style={{padding: '16px', backgroundColor: '#f9fafb', border: 'none', borderRadius: '12px'}} />
-            <input type="time" required style={{padding: '16px', backgroundColor: '#f9fafb', border: 'none', borderRadius: '12px'}} />
+          <div className="grid grid-cols-2 gap-4">
+            <input type="date" required className="w-full p-4 bg-gray-50 rounded-xl outline-none" />
+            <input type="time" required className="w-full p-4 bg-gray-50 rounded-xl outline-none" />
           </div>
 
-          <select required style={{padding: '16px', backgroundColor: '#f9fafb', border: 'none', borderRadius: '12px', width: '100%'}}>
+          <select required className="w-full p-4 bg-gray-50 rounded-xl outline-none appearance-none">
             <option value="">Select Service</option>
-            <option value="Classic Haircut">Classic Haircut</option>
-            <option value="Signature Fade">Signature Fade</option>
-            <option value="Beard Trim">Beard Trim</option>
+            <option value="Classic Haircut">Classic Haircut ($35)</option>
+            <option value="Signature Fade">Signature Fade ($45)</option>
+            <option value="Beard Trim">Beard Trim ($20)</option>
           </select>
           
-          <button type="submit" style={{width: '100%', backgroundColor: 'black', color: 'white', padding: '20px', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer', marginTop: '16px', border: 'none'}}>
+          <button 
+            type="submit" 
+            className="w-full bg-black text-white p-5 rounded-xl font-bold uppercase hover:bg-[#c5a059] transition-all mt-4 shadow-lg active:scale-95"
+          >
             Confirm Booking
           </button>
         </form>
