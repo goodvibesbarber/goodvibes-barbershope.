@@ -8,17 +8,17 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
 export default function BookingForm() {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState('');
-  
-  // NEW: States for the live availability check
   const [selectedDate, setSelectedDate] = useState('');
   const [bookedTimes, setBookedTimes] = useState<string[]>([]);
+
+  // Get today's date in YYYY-MM-DD format to block the past
+  const today = new Date().toISOString().split('T')[0];
 
   const timeSlots = [
     "10:00", "11:00", "12:00", "13:00", 
     "14:00", "15:00", "16:00", "17:00"
   ];
 
-  // SCANNER: Checks database whenever the date changes
   useEffect(() => {
     async function checkAvailability() {
       if (!selectedDate) return;
@@ -44,7 +44,6 @@ export default function BookingForm() {
     const data = Object.fromEntries(formData);
 
     try {
-      // Final security check before saving
       const { data: existing } = await supabase
         .from('bookings')
         .select('*')
@@ -128,6 +127,7 @@ export default function BookingForm() {
               <input 
                 name="date" 
                 type="date" 
+                min={today} // THIS BLOCKS THE PAST
                 required 
                 onChange={(e) => setSelectedDate(e.target.value)}
                 className="w-full p-4 bg-gray-50 border-none rounded-xl outline-none" 
