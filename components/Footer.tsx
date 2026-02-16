@@ -116,12 +116,12 @@ const Footer: React.FC = () => {
             <h4 className="font-bold text-lg mb-6 text-white">Opening Hours</h4>
             <ul className="space-y-2 text-gray-400">
               <li className="flex justify-between md:justify-start gap-4">
-                <span className="w-24">Mon - Fri:</span>
-                <span className="text-white">11:00 AM - 9:00 PM</span>
+                <span className="w-24">Mon - Sat:</span>
+                <span className="text-white">11:00 AM - 8:00 PM</span>
               </li>
               <li className="flex justify-between md:justify-start gap-4">
-                <span className="w-24">Sat - Sun:</span>
-                <span className="text-white">10:00 AM - 7:00 PM</span>
+                <span className="w-24">Sunday:</span>
+                <span className="text-red-400 font-bold">Closed</span>
               </li>
             </ul>
           </div>

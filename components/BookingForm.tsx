@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { BookingFormData } from '../types';
 import { MessageCircle, CheckCircle, Loader2, AlertCircle, Calendar, Clock } from 'lucide-react';
 
-// Define operating hours (Simonyo's hours)
+// Define operating hours: 11 AM to 8 PM. 
+// Last slot is 7:00 PM so the cut finishes by 8:00 PM.
 const TIME_SLOTS = [
   "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", 
-  "4:00 PM", "5:00 PM", "6:00 PM", "7:00 PM", "8:00 PM"
+  "4:00 PM", "5:00 PM", "6:00 PM", "7:00 PM"
 ];
 
 const BookingForm: React.FC = () => {
@@ -29,7 +30,6 @@ const BookingForm: React.FC = () => {
       setBookedSlots(JSON.parse(savedBookings));
     } else {
       // Add some dummy "taken" slots for demonstration
-      // E.g., Book 2:00 PM for tomorrow
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
       const dateStr = tomorrow.toISOString().split('T')[0];
@@ -42,10 +42,23 @@ const BookingForm: React.FC = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     
-    // If date changes, reset time and errors
+    // If date changes, reset time and check for Sunday
     if (e.target.name === 'date') {
         setFormData(prev => ({ ...prev, date: e.target.value, time: '' }));
-        setSlotError(null);
+        
+        if (e.target.value) {
+            // Robust way to get local day of week from YYYY-MM-DD
+            const [y, m, d] = e.target.value.split('-').map(Number);
+            const dateObj = new Date(y, m - 1, d);
+            
+            if (dateObj.getDay() === 0) { // 0 represents Sunday
+                setSlotError("We are closed on Sundays. Please select another date.");
+            } else {
+                setSlotError(null);
+            }
+        } else {
+            setSlotError(null);
+        }
     }
   };
 
@@ -54,12 +67,19 @@ const BookingForm: React.FC = () => {
         setSlotError("Please select a date first.");
         return;
     }
+    
+    // Double check Sunday
+    const [y, m, d] = formData.date.split('-').map(Number);
+    const dateObj = new Date(y, m - 1, d);
+    if (dateObj.getDay() === 0) {
+        setSlotError("We are closed on Sundays.");
+        return;
+    }
 
     const slotKey = `${formData.date}_${time}`;
     
     if (bookedSlots.includes(slotKey)) {
         setSlotError("This slot has been taken. Please choose another.");
-        // Clear error after 3 seconds
         setTimeout(() => setSlotError(null), 3000);
         return;
     }
@@ -129,6 +149,13 @@ const BookingForm: React.FC = () => {
     return bookedSlots.includes(`${formData.date}_${time}`);
   };
 
+  // Check if current selected date is Sunday
+  const isSundaySelected = () => {
+      if (!formData.date) return false;
+      const [y, m, d] = formData.date.split('-').map(Number);
+      return new Date(y, m - 1, d).getDay() === 0;
+  };
+
   return (
     <section id="booking" className="py-24 bg-vibes-white relative">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -163,8 +190,8 @@ const BookingForm: React.FC = () => {
                     Operating Hours
                 </div>
                 <ul className="text-sm text-gray-400 space-y-1">
-                    <li className="flex justify-between"><span>Mon-Fri</span> <span className="text-white">11am - 9pm</span></li>
-                    <li className="flex justify-between"><span>Sat-Sun</span> <span className="text-white">10am - 7pm</span></li>
+                    <li className="flex justify-between"><span>Mon-Sat</span> <span className="text-white">11am - 8pm</span></li>
+                    <li className="flex justify-between"><span>Sunday</span> <span className="text-red-400 font-bold">Closed</span></li>
                 </ul>
 
                 <div className="pt-6">
@@ -293,10 +320,15 @@ const BookingForm: React.FC = () => {
                                 min={new Date().toISOString().split('T')[0]}
                                 value={formData.date}
                                 onChange={handleChange}
-                                className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-vibes-gold focus:border-transparent outline-none transition-all"
+                                className={`w-full px-4 py-3 rounded-lg border focus:bg-white focus:ring-2 focus:ring-vibes-gold focus:border-transparent outline-none transition-all ${isSundaySelected() ? 'border-red-300 bg-red-50 text-red-900' : 'border-gray-200 bg-gray-50'}`}
                             />
                             <Calendar className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" size={20} />
                         </div>
+                        {isSundaySelected() && (
+                            <p className="text-red-500 text-xs mt-1 ml-1 font-medium">
+                                We are closed on Sundays. Please choose another date.
+                            </p>
+                        )}
                     </div>
 
                     <div className="relative">
@@ -306,7 +338,7 @@ const BookingForm: React.FC = () => {
                          </label>
                          
                          {/* Time Slot Grid */}
-                         <div className={`grid grid-cols-3 sm:grid-cols-4 gap-2 transition-opacity duration-300 ${!formData.date ? 'opacity-50 pointer-events-none blur-[1px]' : 'opacity-100'}`}>
+                         <div className={`grid grid-cols-3 sm:grid-cols-4 gap-2 transition-opacity duration-300 ${(!formData.date || isSundaySelected()) ? 'opacity-50 pointer-events-none blur-[1px]' : 'opacity-100'}`}>
                             {TIME_SLOTS.map((slot) => {
                                 const taken = isSlotTaken(slot);
                                 const selected = formData.time === slot;
@@ -344,7 +376,7 @@ const BookingForm: React.FC = () => {
 
                          {/* Error Toast for Taken Slots */}
                          {slotError && (
-                             <div className="absolute top-[-40px] left-0 w-full bg-red-600 text-white text-sm py-2 px-4 rounded-lg shadow-lg flex items-center justify-center animate-bounce">
+                             <div className="absolute top-[-40px] left-0 w-full bg-red-600 text-white text-sm py-2 px-4 rounded-lg shadow-lg flex items-center justify-center animate-bounce z-20">
                                  <AlertCircle size={16} className="mr-2" />
                                  {slotError}
                              </div>
@@ -361,7 +393,7 @@ const BookingForm: React.FC = () => {
 
                 <button 
                   type="submit"
-                  disabled={status === 'loading'}
+                  disabled={status === 'loading' || isSundaySelected()}
                   className="w-full bg-vibes-black text-vibes-white font-bold py-4 rounded-lg hover:bg-vibes-gold hover:text-vibes-black transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl hover:-translate-y-1 disabled:opacity-70 disabled:cursor-not-allowed mt-6"
                 >
                   {status === 'loading' ? (
