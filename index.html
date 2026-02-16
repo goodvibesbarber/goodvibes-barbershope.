@@ -1,45 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Good Vibes Barber Shop</title>
+    <meta name="description" content="Premium grooming by Simonyo. Zero Stress. Perfect Fades." />
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'vibes-white': '#FAFAFA',
+              'vibes-black': '#1A1A1A',
+              'vibes-gold': '#C5A059',
+            },
+            fontFamily: {
+              serif: ['Playfair Display', 'serif'],
+              sans: ['Inter', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.4",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
+    "resend": "https://esm.sh/resend@^6.9.2"
+  }
+}
+</script>
 </head>
-<body class="bg-gray-50 text-gray-900 font-sans">
-
-    <section class="py-20 text-center bg-black text-white">
-        <h1 class="text-5xl font-bold mb-4">Good Vibes Barber Shop</h1>
-        <p class="text-xl text-yellow-500">Zero Stress. Perfect Fades.</p>
-    </section>
-
-    <section id="booking" class="py-16 max-w-xl mx-auto px-4">
-        <div class="bg-white p-8 rounded-2xl shadow-lg border border-gray-200">
-            <h2 class="text-3xl font-bold mb-6 text-center">Book Your Appointment</h2>
-            
-            <form action="https://formspree.io/f/your-id" method="POST" class="space-y-4">
-                <div>
-                    <label class="block font-bold mb-1">Your Name</label>
-                    <input type="text" name="name" required class="w-full p-3 border rounded-lg">
-                </div>
-                <div>
-                    <label class="block font-bold mb-1">Email Address</label>
-                    <input type="email" name="email" required class="w-full p-3 border rounded-lg">
-                </div>
-                <div>
-                    <label class="block font-bold mb-1">Service</label>
-                    <select name="service" class="w-full p-3 border rounded-lg">
-                        <option>Standard Haircut</option>
-                        <option>Student Haircut</option>
-                        <option>Beard Trim</option>
-                    </select>
-                </div>
-                <button type="submit" class="w-full bg-black text-white py-4 rounded-lg font-bold hover:bg-yellow-600 transition">
-                    Send Booking Request
-                </button>
-            </form>
-        </div>
-    </section>
-
-</body>
+  <body class="bg-vibes-white text-vibes-black antialiased selection:bg-vibes-gold selection:text-white">
+    <div id="root"></div>
+    <script type="module" src="./index.tsx"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  </body>
 </html>
