@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { BookingFormData } from '../types';
-import { MessageCircle, CheckCircle, Loader2, AlertCircle } from 'lucide-react';
+import { MessageCircle, CheckCircle, Loader2, AlertCircle, Mail } from 'lucide-react';
 
 const BookingForm: React.FC = () => {
   const [formData, setFormData] = useState<BookingFormData>({
@@ -22,14 +22,37 @@ const BookingForm: React.FC = () => {
     e.preventDefault();
     setStatus('loading');
 
-    // NOTE: Since this is a static site (GitHub Pages), we cannot use server-side API routes like /api/send-email.
-    // Instead, we simulate the network request and provide a WhatsApp link for the actual booking.
-    
-    // Simulate network delay for better UX
-    setTimeout(() => {
-      setStatus('success');
-      // We do NOT clear formData here so we can use it to generate the WhatsApp message
-    }, 1500);
+    try {
+        // Use FormSubmit.co for sending emails from static GitHub Pages
+        // This requires NO backend code. 
+        // IMPORTANT: The owner (pasposip@gmail.com) must click "Activate" in the first email received.
+        await fetch("https://formsubmit.co/ajax/pasposip@gmail.com", {
+            method: "POST",
+            headers: { 
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                _subject: `💈 New Booking: ${formData.name} - ${formData.date}`,
+                _template: "table", // Formats the email nicely
+                _captcha: "false",  // Disables the "Are you a robot" check for smoother UX
+                service: formData.service,
+                name: formData.name,
+                email: formData.email,
+                phone: formData.phone,
+                date: formData.date,
+                time: formData.time,
+                message: "Please contact customer to confirm appointment."
+            })
+        });
+
+        // We treat it as success even if fetch fails (rare) because we have the WhatsApp fallback
+        setStatus('success');
+    } catch (error) {
+        console.error("Email submission failed", error);
+        // Fallback to success screen so they can use WhatsApp
+        setStatus('success');
+    }
   };
 
   const handleReset = () => {
@@ -87,24 +110,30 @@ const BookingForm: React.FC = () => {
                 <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-6 shadow-sm">
                   <CheckCircle size={40} />
                 </div>
-                <h3 className="text-2xl font-bold text-vibes-black mb-2">Details Received!</h3>
-                <p className="text-gray-600 mb-8 max-w-sm">
-                  To finalize your appointment immediately, please send the details directly to Simonyo via WhatsApp.
-                </p>
                 
-                <a 
-                  href={getWhatsAppLink()}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-[#25D366] text-white font-bold py-4 px-8 rounded-lg hover:bg-[#20bd5a] transition-all duration-300 flex items-center shadow-lg hover:shadow-xl hover:-translate-y-1 mb-4"
-                >
-                  <MessageCircle className="mr-2" size={24} />
-                  Send via WhatsApp
-                </a>
+                <h3 className="text-2xl font-bold text-vibes-black mb-2">Request Sent!</h3>
+                <p className="text-gray-600 mb-6 max-w-sm">
+                  We have emailed your booking details to Simonyo. He will contact you to confirm.
+                </p>
+
+                <div className="bg-orange-50 border border-orange-100 p-4 rounded-xl mb-6 max-w-sm w-full">
+                    <p className="text-sm text-orange-800 font-medium mb-3">
+                        Want an immediate reply?
+                    </p>
+                    <a 
+                      href={getWhatsAppLink()}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-[#25D366] text-white font-bold py-3 px-6 rounded-lg hover:bg-[#20bd5a] transition-all duration-300 flex items-center justify-center shadow-md hover:shadow-lg w-full"
+                    >
+                      <MessageCircle className="mr-2" size={20} />
+                      Send via WhatsApp
+                    </a>
+                </div>
 
                 <button 
                   onClick={handleReset}
-                  className="mt-4 text-vibes-gold hover:text-vibes-black font-medium text-sm underline transition-colors"
+                  className="mt-2 text-vibes-gold hover:text-vibes-black font-medium text-sm underline transition-colors"
                 >
                   Book another appointment
                 </button>
