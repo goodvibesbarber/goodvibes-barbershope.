@@ -55,21 +55,59 @@ const Footer: React.FC = () => {
 
           <div className="text-center md:text-left" data-aos="fade-up" data-aos-delay="100">
             <h4 className="font-bold text-lg mb-6 text-white">Find Us</h4>
-            <div className="space-y-4 text-gray-400">
-              <div className="flex items-start justify-center md:justify-start space-x-3">
-                {/* Inline MapPin Icon */}
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-vibes-gold mt-1 shrink-0">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                  <circle cx="12" cy="10" r="3"></circle>
-                </svg>
-                <p>BLK 360 YUNG AN ROAD #04-101,<br />SINGAPORE 610360</p>
-              </div>
-              <div className="flex items-center justify-center md:justify-start space-x-3">
-                {/* Inline Phone Icon */}
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-vibes-gold shrink-0">
-                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                </svg>
-                <p>+65 8727 3741</p>
+            <div className="space-y-6 text-gray-400">
+              
+              {/* Address - Interactive Google Maps Link */}
+              <a 
+                href="https://www.google.com/maps/dir/?api=1&destination=Blk+360+Yung+An+Rd,+#04-101+Singapore+610360"
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-start justify-center md:justify-start space-x-4 group transition-all duration-300"
+              >
+                <div className="mt-1 p-2 rounded-full bg-white/5 text-vibes-gold group-hover:bg-vibes-gold group-hover:text-vibes-black transition-colors duration-300 shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                  </svg>
+                </div>
+                <div className="text-left group-hover:text-white transition-colors">
+                    <p className="font-bold text-vibes-gold text-sm uppercase tracking-wider mb-1">Visit Shop</p>
+                    <p className="leading-relaxed text-sm">BLK 360 YUNG AN ROAD #04-101,<br />SINGAPORE 610360</p>
+                </div>
+              </a>
+
+              {/* Phone & WhatsApp Section */}
+              <div className="flex flex-col space-y-3">
+                  
+                  {/* Call Link */}
+                  <a 
+                    href="tel:+6587273741"
+                    className="flex items-center justify-center md:justify-start space-x-4 group transition-all duration-300"
+                  >
+                    <div className="p-2 rounded-full bg-white/5 text-vibes-gold group-hover:bg-vibes-gold group-hover:text-vibes-black transition-colors duration-300 shrink-0">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                      </svg>
+                    </div>
+                    <span className="text-sm font-medium group-hover:text-white transition-colors">+65 8727 3741</span>
+                  </a>
+
+                  {/* WhatsApp Link */}
+                  <a 
+                    href="https://wa.me/6587273741"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center md:justify-start space-x-4 group transition-all duration-300"
+                  >
+                    <div className="p-2 rounded-full bg-white/5 text-vibes-gold group-hover:bg-[#25D366] group-hover:text-white transition-colors duration-300 shrink-0">
+                      {/* WhatsApp Icon */}
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                         <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                      </svg>
+                    </div>
+                    <span className="text-sm font-medium group-hover:text-white transition-colors">Chat on WhatsApp</span>
+                  </a>
+
               </div>
             </div>
           </div>
