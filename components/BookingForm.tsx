@@ -302,7 +302,7 @@ const BookingForm: React.FC = () => {
                         <option value="Beard Trim">Beard Trim ($25)</option>
                         <option value="Clean Shave">Clean Shave ($30)</option>
                         <option value="Vibes Experience">Vibes Experience ($55)</option>
-                        <option value="Good Vibes Experience">The Works ($70)</option>
+                        <option value="Good Vibes Experience">Good Vibes Experience ($70)</option>
                       </select>
                 </div>
 
