@@ -8,6 +8,7 @@ import Footer from './Footer';
 
 const App = () => {
   useEffect(() => {
+    // Check if AOS is loaded on the window object
     if (window.AOS) {
       window.AOS.init({
         duration: 1000,
