@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { BookingFormData } from '../types';
 import { MessageCircle, CheckCircle, Loader2, AlertCircle, Calendar, Clock } from 'lucide-react';
 
-// Define operating hours: 11 AM to 8 PM. 
-// Last slot is 7:00 PM so the cut finishes by 8:00 PM.
+// Define operating hours: 11 AM to 9 PM. 
+// Last slot is 8:00 PM.
 const TIME_SLOTS = [
   "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", 
-  "4:00 PM", "5:00 PM", "6:00 PM", "7:00 PM"
+  "4:00 PM", "5:00 PM", "6:00 PM", "7:00 PM", "8:00 PM"
 ];
 
 const BookingForm: React.FC = () => {
@@ -190,7 +190,7 @@ const BookingForm: React.FC = () => {
                     Operating Hours
                 </div>
                 <ul className="text-sm text-gray-400 space-y-1">
-                    <li className="flex justify-between"><span>Mon-Sat</span> <span className="text-white">11am - 8pm</span></li>
+                    <li className="flex justify-between"><span>Mon-Sat</span> <span className="text-white">11am - 9pm</span></li>
                     <li className="flex justify-between"><span>Sunday</span> <span className="text-red-400 font-bold">Closed</span></li>
                 </ul>
 

@@ -117,7 +117,7 @@ const Footer: React.FC = () => {
             <ul className="space-y-2 text-gray-400">
               <li className="flex justify-between md:justify-start gap-4">
                 <span className="w-24">Mon - Sat:</span>
-                <span className="text-white">11:00 AM - 8:00 PM</span>
+                <span className="text-white">11:00 AM - 9:00 PM</span>
               </li>
               <li className="flex justify-between md:justify-start gap-4">
                 <span className="w-24">Sunday:</span>
