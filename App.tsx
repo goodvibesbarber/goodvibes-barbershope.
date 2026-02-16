@@ -1,29 +1,19 @@
-<main className="flex-grow">
-        <Hero />
-        <About />
-        <Services />
-        {/* We added the ID "booking" so the Navbar and Hero buttons know where to jump */}
-        <div id="booking">
-          <BookingForm />
-        </div>
-      </main>
+import React, { useEffect } from 'react';
+import Navbar from './Navbar';
+import Hero from './Hero';
+import About from './About';
+import Services from './Services';
+import BookingForm from './BookingForm';
+import Footer from './Footer';
 
-// Declare AOS since it's loaded via CDN
-declare global {
-  interface Window {
-    AOS: any;
-  }
-}
-
-const App: React.FC = () => {
+const App = () => {
   useEffect(() => {
     if (window.AOS) {
       window.AOS.init({
-        duration: 1000, // Slower duration for elegance
+        duration: 1000,
         once: true,
         offset: 50,
         easing: 'ease-out-cubic',
-        mirror: false,
       });
     }
   }, []);
@@ -35,7 +25,9 @@ const App: React.FC = () => {
         <Hero />
         <About />
         <Services />
-        <BookingForm />
+        <div id="booking">
+          <BookingForm />
+        </div>
       </main>
       <Footer />
     </div>
