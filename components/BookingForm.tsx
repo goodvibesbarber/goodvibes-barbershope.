@@ -1,18 +1,37 @@
 import React, { useState } from 'react';
+import { BookingFormData } from '../types';
 
 const BookingForm: React.FC = () => {
+  const [formData, setFormData] = useState<BookingFormData>({
+    name: '',
+    email: '',
+    phone: '',
+    date: '',
+    time: '',
+    service: 'Haircut',
+  });
+
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
-  // FORM HANDLING LOGIC
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('loading');
 
-    const form = e.currentTarget;
-    const data = new FormData(form);
+    // We use standard FormData to ensure Formspree receives the fields correctly
+    const data = new FormData();
+    data.append("name", formData.name);
+    data.append("email", formData.email);
+    data.append("phone", formData.phone);
+    data.append("date", formData.date);
+    data.append("time", formData.time);
+    data.append("service", formData.service);
 
     try {
-      // REPLACE THE URL BELOW with your unique Formspree ID later
+      // This sends the data to a real email service instead of a broken local link
       const response = await fetch('https://formspree.io/f/mqaejovz', {
         method: 'POST',
         body: data,
@@ -23,11 +42,12 @@ const BookingForm: React.FC = () => {
 
       if (response.ok) {
         setStatus('success');
-        form.reset();
+        setFormData({ name: '', email: '', phone: '', date: '', time: '', service: 'Haircut' });
       } else {
         setStatus('error');
       }
     } catch (error) {
+      console.error('Booking failed:', error);
       setStatus('error');
     }
   };
@@ -54,9 +74,12 @@ const BookingForm: React.FC = () => {
 
           <div className="md:w-2/3 p-10">
             {status === 'success' ? (
-              <div className="h-full flex flex-col items-center justify-center text-center">
+              <div className="h-full flex flex-col items-center justify-center text-center animate-fade-in">
                 <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-6">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                  </svg>
                 </div>
                 <h3 className="text-2xl font-bold text-vibes-black mb-2">Booking Request Sent!</h3>
                 <p className="text-gray-600">Simonyo will confirm your appointment shortly via email.</p>
@@ -67,33 +90,33 @@ const BookingForm: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                    <input type="text" name="name" required className="w-full px-4 py-3 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-vibes-gold" placeholder="Your name" />
+                    <input type="text" name="name" required value={formData.name} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-vibes-gold outline-none" placeholder="Your name" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-                    <input type="tel" name="phone" required className="w-full px-4 py-3 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-vibes-gold" placeholder="+65 1234 5678" />
+                    <input type="tel" name="phone" required value={formData.phone} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-vibes-gold outline-none" placeholder="+65 1234 5678" />
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                  <input type="email" name="email" required className="w-full px-4 py-3 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-vibes-gold" placeholder="you@example.com" />
+                  <input type="email" name="email" required value={formData.email} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-vibes-gold outline-none" placeholder="you@example.com" />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
-                    <input type="date" name="date" required className="w-full px-4 py-3 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-vibes-gold" />
+                    <input type="date" name="date" required value={formData.date} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-vibes-gold outline-none" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Time</label>
-                    <input type="time" name="time" required className="w-full px-4 py-3 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-vibes-gold" />
+                    <input type="time" name="time" required value={formData.time} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-vibes-gold outline-none" />
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Service</label>
-                  <select name="service" className="w-full px-4 py-3 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-vibes-gold bg-white">
+                  <select name="service" value={formData.service} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-vibes-gold outline-none bg-white">
                     <option value="Haircut">Haircut ($35)</option>
                     <option value="Student Haircut">Student Haircut ($25)</option>
                     <option value="Beard Trim">Beard Trim ($25)</option>
@@ -103,11 +126,9 @@ const BookingForm: React.FC = () => {
                   </select>
                 </div>
 
-                <button 
-                  type="submit"
-                  disabled={status === 'loading'}
-                  className="w-full bg-vibes-black text-vibes-white font-bold py-4 rounded-lg hover:bg-vibes-gold hover:text-vibes-black transition-all flex items-center justify-center disabled:opacity-70"
-                >
+                {status === 'error' && <p className="text-red-600 text-sm font-medium">Error sending booking. Please try again.</p>}
+
+                <button type="submit" disabled={status === 'loading'} className="w-full bg-vibes-black text-vibes-white font-bold py-4 rounded-lg hover:bg-vibes-gold hover:text-vibes-black transition-all disabled:opacity-70">
                   {status === 'loading' ? 'Processing...' : 'Confirm Booking'}
                 </button>
               </form>
