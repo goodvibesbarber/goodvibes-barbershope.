@@ -1,88 +1,31 @@
 import React from 'react';
-import { MapPin, Award } from 'lucide-react';
 import LocalImage from './LocalImage';
 
-const About: React.FC = () => {
+const About = () => {
   return (
-    <section id="about" className="py-24 bg-white relative overflow-hidden">
-        {/* Decorative background element */}
-        <div className="absolute top-0 right-0 w-1/3 h-full bg-gray-50 -skew-x-12 opacity-50 pointer-events-none"></div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+    <section id="about" className="py-24 bg-white relative">
+      <div className="max-w-7xl mx-auto px-4 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          
-          <div className="order-2 lg:order-1 grid grid-cols-2 gap-4">
-            
-            {/* IMAGE 1: Blue Cape Fade */}
-            <LocalImage 
-              src="blue-cape.jpg" 
-              alt="Side profile skin fade with blue cape" 
-              className="rounded-lg shadow-lg w-full h-96 object-cover mt-12 bg-gray-100"
-              aos="fade-right"
-              aosDelay="100"
-            />
-            
-            {/* IMAGE 2: Red Jersey Texture */}
-            <LocalImage 
-              src="red-jersey.jpg" 
-              alt="Back view textured haircut with red jersey" 
-              className="rounded-lg shadow-lg w-full h-96 object-cover bg-gray-100"
-              aos="fade-right"
-              aosDelay="300"
-            />
-            
+          <div className="grid grid-cols-2 gap-4">
+            <LocalImage src="blue-cape.jpg" alt="Skin Fade" className="rounded-lg h-96 mt-12" aos="fade-right" />
+            <LocalImage src="red-jersey.jpg" alt="Texture" className="rounded-lg h-96" aos="fade-right" aosDelay="200" />
           </div>
-
-          <div className="order-1 lg:order-2">
-            <h4 
-              data-aos="fade-up" 
-              className="text-vibes-gold font-bold tracking-widest uppercase mb-2"
-            >
-              The Story
-            </h4>
-            <h2 
-              data-aos="fade-up" 
-              data-aos-delay="100"
-              className="text-4xl md:text-5xl font-serif font-bold text-vibes-black mb-6"
-            >
-              A Cut Above <br /> The Rest.
-            </h2>
-            <p 
-              data-aos="fade-up" 
-              data-aos-delay="200"
-              className="text-gray-600 text-lg leading-relaxed mb-8"
-            >
-              Located at <span className="text-vibes-black font-semibold">Yung An Road</span>, Good Vibes Barber Shop is the go-to spot for premium grooming in Singapore. 
-              Simonyo specializes in precision fades and creating a relaxing atmosphere where you can unwind.
-            </p>
-
+          <div>
+            <h4 data-aos="fade-up" className="text-vibes-gold font-bold uppercase tracking-widest mb-2">The Story</h4>
+            <h2 data-aos="fade-up" className="text-4xl font-serif font-bold mb-6">A Cut Above <br /> The Rest.</h2>
+            <p className="text-gray-600 text-lg mb-8">Located at Yung An Road, Good Vibes Barber Shop is the spot for premium grooming. Simonyo specializes in precision fades.</p>
             <div className="space-y-6">
-              <div 
-                data-aos="fade-up" 
-                data-aos-delay="300"
-                className="flex items-start space-x-4"
-              >
-                <div className="bg-vibes-gold/20 p-3 rounded-full text-vibes-gold shrink-0">
-                  <MapPin size={24} />
+              <div className="flex items-start space-x-4">
+                <div className="bg-vibes-gold/20 p-3 rounded-full text-vibes-gold">
+                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
                 </div>
-                <div>
-                  <h3 className="font-bold text-vibes-black text-lg">Prime Location</h3>
-                  <p className="text-gray-500">BLK 360 Yung An Road #04-101, Singapore 610360</p>
-                </div>
+                <div><h3 className="font-bold">Prime Location</h3><p className="text-gray-500">BLK 360 Yung An Road, Singapore</p></div>
               </div>
-
-              <div 
-                data-aos="fade-up" 
-                data-aos-delay="400"
-                className="flex items-start space-x-4"
-              >
-                <div className="bg-vibes-gold/20 p-3 rounded-full text-vibes-gold shrink-0">
-                  <Award size={24} />
+              <div className="flex items-start space-x-4">
+                <div className="bg-vibes-gold/20 p-3 rounded-full text-vibes-gold">
+                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/><circle cx="12" cy="8" r="6"/></svg>
                 </div>
-                <div>
-                  <h3 className="font-bold text-vibes-black text-lg">Premium Quality</h3>
-                  <p className="text-gray-500">Expert techniques, hot towels, and top-tier products.</p>
-                </div>
+                <div><h3 className="font-bold">Premium Quality</h3><p className="text-gray-500">Expert techniques and hot towels.</p></div>
               </div>
             </div>
           </div>
