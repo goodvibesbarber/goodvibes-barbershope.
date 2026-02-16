@@ -1,6 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BookingFormData } from '../types';
-import { MessageCircle, CheckCircle, Loader2, AlertCircle, Mail } from 'lucide-react';
+import { MessageCircle, CheckCircle, Loader2, AlertCircle, Calendar, Clock } from 'lucide-react';
+
+// Define operating hours (Simonyo's hours)
+const TIME_SLOTS = [
+  "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", 
+  "4:00 PM", "5:00 PM", "6:00 PM", "7:00 PM", "8:00 PM"
+];
 
 const BookingForm: React.FC = () => {
   const [formData, setFormData] = useState<BookingFormData>({
@@ -13,19 +19,72 @@ const BookingForm: React.FC = () => {
   });
 
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [bookedSlots, setBookedSlots] = useState<string[]>([]);
+  const [slotError, setSlotError] = useState<string | null>(null);
+
+  // Load simulated bookings from localStorage on mount
+  useEffect(() => {
+    const savedBookings = localStorage.getItem('simonyo_bookings');
+    if (savedBookings) {
+      setBookedSlots(JSON.parse(savedBookings));
+    } else {
+      // Add some dummy "taken" slots for demonstration
+      // E.g., Book 2:00 PM for tomorrow
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const dateStr = tomorrow.toISOString().split('T')[0];
+      const dummyBookings = [`${dateStr}_2:00 PM`, `${dateStr}_4:00 PM`];
+      setBookedSlots(dummyBookings);
+      localStorage.setItem('simonyo_bookings', JSON.stringify(dummyBookings));
+    }
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    
+    // If date changes, reset time and errors
+    if (e.target.name === 'date') {
+        setFormData(prev => ({ ...prev, date: e.target.value, time: '' }));
+        setSlotError(null);
+    }
+  };
+
+  const handleTimeSelect = (time: string) => {
+    if (!formData.date) {
+        setSlotError("Please select a date first.");
+        return;
+    }
+
+    const slotKey = `${formData.date}_${time}`;
+    
+    if (bookedSlots.includes(slotKey)) {
+        setSlotError("This slot has been taken. Please choose another.");
+        // Clear error after 3 seconds
+        setTimeout(() => setSlotError(null), 3000);
+        return;
+    }
+
+    setFormData({ ...formData, time });
+    setSlotError(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.time) {
+        setSlotError("Please select a time slot.");
+        return;
+    }
+
     setStatus('loading');
 
+    // Simulate marking the slot as taken
+    const newSlotKey = `${formData.date}_${formData.time}`;
+    const updatedBookings = [...bookedSlots, newSlotKey];
+    setBookedSlots(updatedBookings);
+    localStorage.setItem('simonyo_bookings', JSON.stringify(updatedBookings));
+
     try {
-        // Use FormSubmit.co for sending emails from static GitHub Pages
-        // This requires NO backend code. 
-        // IMPORTANT: The owner (pasposip@gmail.com) must click "Activate" in the first email received.
+        // FormSubmit.co integration
         await fetch("https://formsubmit.co/ajax/pasposip@gmail.com", {
             method: "POST",
             headers: { 
@@ -33,9 +92,9 @@ const BookingForm: React.FC = () => {
                 'Accept': 'application/json'
             },
             body: JSON.stringify({
-                _subject: `💈 New Booking: ${formData.name} - ${formData.date}`,
-                _template: "table", // Formats the email nicely
-                _captcha: "false",  // Disables the "Are you a robot" check for smoother UX
+                _subject: `💈 New Booking: ${formData.name} - ${formData.date} @ ${formData.time}`,
+                _template: "table",
+                _captcha: "false",
                 service: formData.service,
                 name: formData.name,
                 email: formData.email,
@@ -46,11 +105,9 @@ const BookingForm: React.FC = () => {
             })
         });
 
-        // We treat it as success even if fetch fails (rare) because we have the WhatsApp fallback
         setStatus('success');
     } catch (error) {
         console.error("Email submission failed", error);
-        // Fallback to success screen so they can use WhatsApp
         setStatus('success');
     }
   };
@@ -58,6 +115,7 @@ const BookingForm: React.FC = () => {
   const handleReset = () => {
     setStatus('idle');
     setFormData({ name: '', email: '', phone: '', date: '', time: '', service: 'Haircut' });
+    setSlotError(null);
   };
 
   const getWhatsAppLink = () => {
@@ -65,12 +123,19 @@ const BookingForm: React.FC = () => {
     return `https://wa.me/6587273741?text=${text}`;
   };
 
+  // Check if a specific slot is taken
+  const isSlotTaken = (time: string) => {
+    if (!formData.date) return false;
+    return bookedSlots.includes(`${formData.date}_${time}`);
+  };
+
   return (
     <section id="booking" className="py-24 bg-vibes-white relative">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row" data-aos="fade-up">
           
+          {/* Left Side: Info & Branding */}
           <div className="md:w-1/3 bg-vibes-black p-10 flex flex-col justify-between text-vibes-white relative overflow-hidden">
             <div className="relative z-10">
               <h3 
@@ -85,7 +150,7 @@ const BookingForm: React.FC = () => {
                 data-aos-delay="300"
                 className="text-gray-400 mb-8"
               >
-                Secure your spot with Simonyo. Walk-ins welcome, appointments preferred.
+                Secure your spot with Simonyo. Select a date to view available time slots.
               </p>
               
               <div 
@@ -93,9 +158,20 @@ const BookingForm: React.FC = () => {
                 data-aos-delay="400"
                 className="space-y-4"
               >
-                <p className="text-sm font-semibold uppercase tracking-wider text-vibes-gold">Contact</p>
-                <p>+65 8727 3741</p>
-                <p>@GoodVibesBarberShop</p>
+                <div className="flex items-center text-sm font-semibold uppercase tracking-wider text-vibes-gold mb-2">
+                    <Clock size={16} className="mr-2" />
+                    Operating Hours
+                </div>
+                <ul className="text-sm text-gray-400 space-y-1">
+                    <li className="flex justify-between"><span>Mon-Fri</span> <span className="text-white">11am - 9pm</span></li>
+                    <li className="flex justify-between"><span>Sat-Sun</span> <span className="text-white">10am - 7pm</span></li>
+                </ul>
+
+                <div className="pt-6">
+                    <p className="text-sm font-semibold uppercase tracking-wider text-vibes-gold">Contact</p>
+                    <p className="mt-1">+65 8727 3741</p>
+                    <p>@GoodVibesBarberShop</p>
+                </div>
               </div>
             </div>
             {/* Background pattern */}
@@ -104,21 +180,22 @@ const BookingForm: React.FC = () => {
             </div>
           </div>
 
-          <div className="md:w-2/3 p-10">
+          {/* Right Side: Interactive Form */}
+          <div className="md:w-2/3 p-8 md:p-10 bg-white">
             {status === 'success' ? (
-              <div className="h-full flex flex-col items-center justify-center text-center animate-fade-in">
+              <div className="h-full flex flex-col items-center justify-center text-center animate-fade-in py-10">
                 <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-6 shadow-sm">
                   <CheckCircle size={40} />
                 </div>
                 
                 <h3 className="text-2xl font-bold text-vibes-black mb-2">Request Sent!</h3>
                 <p className="text-gray-600 mb-6 max-w-sm">
-                  We have emailed your booking details to Simonyo. He will contact you to confirm.
+                  Your slot for <strong>{formData.date} at {formData.time}</strong> has been tentatively reserved.
                 </p>
 
                 <div className="bg-orange-50 border border-orange-100 p-4 rounded-xl mb-6 max-w-sm w-full">
                     <p className="text-sm text-orange-800 font-medium mb-3">
-                        Want an immediate reply?
+                        Final Step: Confirm via WhatsApp
                     </p>
                     <a 
                       href={getWhatsAppLink()}
@@ -139,87 +216,140 @@ const BookingForm: React.FC = () => {
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                    <input 
-                      type="text" 
-                      name="name"
-                      required
-                      value={formData.name}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-vibes-gold focus:border-transparent outline-none transition-all"
-                      placeholder="Your name"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-                    <input 
-                      type="tel" 
-                      name="phone"
-                      required
-                      value={formData.phone}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-vibes-gold focus:border-transparent outline-none transition-all"
-                      placeholder="+65 1234 5678"
-                    />
-                  </div>
+              <form onSubmit={handleSubmit} className="space-y-8">
+                {/* Personal Details Section */}
+                <div className="space-y-4">
+                    <h4 className="text-lg font-serif font-bold text-vibes-black border-b border-gray-100 pb-2">1. Your Details</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Name</label>
+                            <input 
+                            type="text" 
+                            name="name"
+                            required
+                            value={formData.name}
+                            onChange={handleChange}
+                            className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-vibes-gold focus:border-transparent outline-none transition-all"
+                            placeholder="Your name"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Phone</label>
+                            <input 
+                            type="tel" 
+                            name="phone"
+                            required
+                            value={formData.phone}
+                            onChange={handleChange}
+                            className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-vibes-gold focus:border-transparent outline-none transition-all"
+                            placeholder="+65 1234 5678"
+                            />
+                        </div>
+                    </div>
+                    <div>
+                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Email</label>
+                        <input 
+                            type="email" 
+                            name="email"
+                            required
+                            value={formData.email}
+                            onChange={handleChange}
+                            className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-vibes-gold focus:border-transparent outline-none transition-all"
+                            placeholder="you@example.com"
+                        />
+                    </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                  <input 
-                    type="email" 
-                    name="email"
-                    required
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-vibes-gold focus:border-transparent outline-none transition-all"
-                    placeholder="you@example.com"
-                  />
+                {/* Service Selection */}
+                <div className="space-y-4">
+                     <h4 className="text-lg font-serif font-bold text-vibes-black border-b border-gray-100 pb-2">2. Choose Service</h4>
+                     <select 
+                        name="service"
+                        value={formData.service}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white focus:ring-2 focus:ring-vibes-gold focus:border-transparent outline-none transition-all appearance-none cursor-pointer"
+                        style={{backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23131313%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right .7em top 50%', backgroundSize: '.65em auto'}}
+                      >
+                        <option value="Haircut">Haircut ($35)</option>
+                        <option value="Student Haircut">Student Haircut ($25)</option>
+                        <option value="Beard Trim">Beard Trim ($25)</option>
+                        <option value="Clean Shave">Clean Shave ($30)</option>
+                        <option value="Vibes Experience">Vibes Experience ($55)</option>
+                        <option value="Good Vibes Experience">The Works ($70)</option>
+                      </select>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
-                    <input 
-                      type="date" 
-                      name="date"
-                      required
-                      value={formData.date}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-vibes-gold focus:border-transparent outline-none transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Time</label>
-                    <input 
-                      type="time" 
-                      name="time"
-                      required
-                      value={formData.time}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-vibes-gold focus:border-transparent outline-none transition-all"
-                    />
-                  </div>
-                </div>
+                {/* Date & Time Selection */}
+                <div className="space-y-4">
+                    <h4 className="text-lg font-serif font-bold text-vibes-black border-b border-gray-100 pb-2">3. Date & Time</h4>
+                    
+                    <div>
+                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Select Date</label>
+                        <div className="relative">
+                            <input 
+                                type="date" 
+                                name="date"
+                                required
+                                min={new Date().toISOString().split('T')[0]}
+                                value={formData.date}
+                                onChange={handleChange}
+                                className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-vibes-gold focus:border-transparent outline-none transition-all"
+                            />
+                            <Calendar className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" size={20} />
+                        </div>
+                    </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Service</label>
-                  <select 
-                    name="service"
-                    value={formData.service}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-vibes-gold focus:border-transparent outline-none transition-all bg-white"
-                  >
-                    <option value="Haircut">Haircut ($35)</option>
-                    <option value="Student Haircut">Student Haircut ($25)</option>
-                    <option value="Beard Trim">Beard Trim ($25)</option>
-                    <option value="Clean Shave">Clean Shave ($30)</option>
-                    <option value="Vibes Experience">Vibes Experience ($55)</option>
-                    <option value="Good Vibes Experience">The Works ($70)</option>
-                  </select>
+                    <div className="relative">
+                         <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2 flex justify-between">
+                            <span>Select Time Slot</span>
+                            {formData.time && <span className="text-vibes-gold font-bold">{formData.time}</span>}
+                         </label>
+                         
+                         {/* Time Slot Grid */}
+                         <div className={`grid grid-cols-3 sm:grid-cols-4 gap-2 transition-opacity duration-300 ${!formData.date ? 'opacity-50 pointer-events-none blur-[1px]' : 'opacity-100'}`}>
+                            {TIME_SLOTS.map((slot) => {
+                                const taken = isSlotTaken(slot);
+                                const selected = formData.time === slot;
+                                
+                                return (
+                                    <button
+                                        key={slot}
+                                        type="button"
+                                        disabled={taken}
+                                        onClick={() => handleTimeSelect(slot)}
+                                        className={`
+                                            py-2 px-1 text-xs sm:text-sm font-medium rounded-md border transition-all duration-200 relative
+                                            ${selected 
+                                                ? 'bg-vibes-gold text-vibes-black border-vibes-gold shadow-md transform scale-105 z-10' 
+                                                : taken 
+                                                    ? 'bg-gray-100 text-gray-400 border-gray-100 cursor-not-allowed decoration-slice' 
+                                                    : 'bg-white text-gray-700 border-gray-200 hover:border-vibes-gold hover:text-vibes-black'
+                                            }
+                                        `}
+                                    >
+                                        {slot}
+                                        {taken && (
+                                            <span className="absolute inset-0 flex items-center justify-center bg-gray-100/80 text-[10px] text-red-500 font-bold uppercase tracking-wider rounded-md">
+                                                Booked
+                                            </span>
+                                        )}
+                                    </button>
+                                );
+                            })}
+                         </div>
+                         
+                         {!formData.date && (
+                             <p className="text-xs text-gray-400 mt-2 text-center italic">Please select a date first to view availability</p>
+                         )}
+
+                         {/* Error Toast for Taken Slots */}
+                         {slotError && (
+                             <div className="absolute top-[-40px] left-0 w-full bg-red-600 text-white text-sm py-2 px-4 rounded-lg shadow-lg flex items-center justify-center animate-bounce">
+                                 <AlertCircle size={16} className="mr-2" />
+                                 {slotError}
+                             </div>
+                         )}
+                    </div>
                 </div>
 
                 {status === 'error' && (
@@ -232,7 +362,7 @@ const BookingForm: React.FC = () => {
                 <button 
                   type="submit"
                   disabled={status === 'loading'}
-                  className="w-full bg-vibes-black text-vibes-white font-bold py-4 rounded-lg hover:bg-vibes-gold hover:text-vibes-black transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl hover:-translate-y-1 disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="w-full bg-vibes-black text-vibes-white font-bold py-4 rounded-lg hover:bg-vibes-gold hover:text-vibes-black transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl hover:-translate-y-1 disabled:opacity-70 disabled:cursor-not-allowed mt-6"
                 >
                   {status === 'loading' ? (
                     <>
@@ -240,7 +370,7 @@ const BookingForm: React.FC = () => {
                       Processing...
                     </>
                   ) : (
-                    'Confirm Booking'
+                    'Confirm Appointment'
                   )}
                 </button>
               </form>
