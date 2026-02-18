@@ -7,7 +7,8 @@ interface LocalImageProps {
   aos?: string;
   aosDelay?: string;
   errorLabel?: string;
-  fallbackSrc?: string; // New prop for backup image
+  fallbackSrc?: string; // Kept for backward compatibility
+  fallbacks?: string[]; // New: List of backup images to try in order
   [key: string]: any;
 }
 
@@ -19,31 +20,46 @@ const LocalImage: React.FC<LocalImageProps> = ({
   aosDelay,
   errorLabel,
   fallbackSrc,
+  fallbacks = [],
   ...props 
 }) => {
-  const [imgSrc, setImgSrc] = useState(src);
+  // Combine all sources into one priority list
+  // 1. Main src
+  // 2. fallbacks array
+  // 3. legacy fallbackSrc
+  const allSources = [src, ...fallbacks, fallbackSrc].filter(Boolean) as string[];
+
+  const [currentSrcIndex, setCurrentSrcIndex] = useState(0);
+  const [imgSrc, setImgSrc] = useState(allSources[0]);
   const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Reset state when the main src prop changes
+  // Reset when the main src prop changes
   useEffect(() => {
-    setImgSrc(src);
-    setHasError(false);
-    setIsLoading(true);
-  }, [src]);
+    const newSources = [src, ...fallbacks, fallbackSrc].filter(Boolean) as string[];
+    if (newSources[0] !== allSources[0]) {
+        setCurrentSrcIndex(0);
+        setImgSrc(newSources[0]);
+        setHasError(false);
+        setIsLoading(true);
+    }
+  }, [src, fallbacks, fallbackSrc]);
 
   const handleLoad = () => {
     setIsLoading(false);
   };
   
   const handleError = () => {
-    // If we have a fallback and we aren't already displaying it, switch to fallback
-    if (fallbackSrc && imgSrc !== fallbackSrc) {
-        console.log(`Image failed: ${imgSrc}. Switching to fallback: ${fallbackSrc}`);
-        setImgSrc(fallbackSrc);
-        // We keep isLoading true until the fallback loads
+    const nextIndex = currentSrcIndex + 1;
+    
+    if (nextIndex < allSources.length) {
+        console.log(`Image failed: ${imgSrc}. Trying backup: ${allSources[nextIndex]}`);
+        setCurrentSrcIndex(nextIndex);
+        setImgSrc(allSources[nextIndex]);
+        // Keep loading true while we try the next one
     } else {
-        // If no fallback, or fallback also failed, show error state
+        // All options failed
+        console.error(`All image sources failed for alt: "${alt}"`);
         setIsLoading(false);
         setHasError(true);
     }

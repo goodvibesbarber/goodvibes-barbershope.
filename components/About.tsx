@@ -13,26 +13,32 @@ const About: React.FC = () => {
           
           <div className="order-2 lg:order-1 grid grid-cols-2 gap-4">
             
-            {/* IMAGE 1: Sharp Fade (Back/Side Profile) */}
+            {/* IMAGE 1: Sharp Fade (Red Shirt / Back Profile) */}
             <LocalImage 
               src="/about1.jpg"
-              fallbackSrc="https://images.unsplash.com/photo-1559582798-678dfc71ccd8?auto=format&fit=crop&w=800&q=80" 
+              fallbacks={[
+                "/about1.jpg.jpeg", 
+                "https://images.unsplash.com/photo-1559582798-678dfc71ccd8?auto=format&fit=crop&w=800&q=80"
+              ]}
               alt="Precision fade and beard grooming" 
               className="rounded-lg shadow-lg w-full h-96 object-cover mt-12 bg-gray-100"
               aos="fade-right"
               aosDelay="100"
-              errorLabel="Upload about1.jpg to public folder"
+              errorLabel="Upload about1.jpg"
             />
             
-            {/* IMAGE 2: Shop Atmosphere / Styling (Side Profile) */}
+            {/* IMAGE 2: Blue Cape / Side Profile */}
             <LocalImage 
               src="/about2.jpg"
-              fallbackSrc="https://images.unsplash.com/photo-1621605815971-fbc98d665033?auto=format&fit=crop&w=800&q=80" 
+              fallbacks={[
+                "/about2.jpg.jpeg",
+                "https://images.unsplash.com/photo-1621605815971-fbc98d665033?auto=format&fit=crop&w=800&q=80"
+              ]}
               alt="Barber working with precision" 
               className="rounded-lg shadow-lg w-full h-96 object-cover bg-gray-100"
               aos="fade-right"
               aosDelay="300"
-              errorLabel="Upload about2.jpg to public folder"
+              errorLabel="Upload about2.jpg"
             />
             
           </div>

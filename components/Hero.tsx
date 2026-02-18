@@ -8,7 +8,10 @@ const Hero: React.FC = () => {
       <div className="absolute inset-0 z-0 opacity-5">
         <LocalImage 
             src="/bg.jpg"
-            fallbackSrc="https://images.unsplash.com/photo-1503951914875-befbb7135952?auto=format&fit=crop&w=1920&q=80" 
+            fallbacks={[
+              "/bg.jpg.jpeg", // Try the double extension version just in case
+              "https://images.unsplash.com/photo-1503951914875-befbb7135952?auto=format&fit=crop&w=1920&q=80" // Final backup
+            ]}
             alt="Background Texture"
             className="w-full h-full object-cover"
         />
@@ -65,12 +68,17 @@ const Hero: React.FC = () => {
               <div className="absolute inset-0 bg-vibes-gold transform translate-x-4 translate-y-4 rounded-2xl"></div>
               
               {/* 
-                 AUTOMATIC IMAGE DETECTION:
-                 Now looks for '/profile.jpg' in the public folder.
+                 SMART IMAGE SYSTEM:
+                 1. Tries /profile.jpg (Clean Name)
+                 2. Tries /profile.jpg.jpeg (Your current file)
+                 3. Tries Unsplash (Internet backup)
               */}
               <LocalImage 
                 src="/profile.jpg"
-                fallbackSrc="https://images.unsplash.com/photo-1618077360395-f3068be8e001?auto=format&fit=crop&w=800&q=80"
+                fallbacks={[
+                  "/profile.jpg.jpeg", 
+                  "https://images.unsplash.com/photo-1618077360395-f3068be8e001?auto=format&fit=crop&w=800&q=80"
+                ]}
                 alt="Simonyo - Lead Barber & Owner" 
                 errorLabel="Upload profile.jpg to public folder"
                 className="relative w-full h-full object-cover rounded-2xl shadow-2xl"
