@@ -1,16 +1,14 @@
 import React from 'react';
 import { ChevronDown } from 'lucide-react';
 import LocalImage from './LocalImage';
-// We import the image directly to ensure Vite/Webpack bundles it correctly
-// @ts-ignore
-import profileImg from '../simonyo.jpg.png';
 
 const Hero: React.FC = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden bg-vibes-white">
       <div className="absolute inset-0 z-0 opacity-5">
         <LocalImage 
-            src="https://images.unsplash.com/photo-1503951914875-befbb7135952?auto=format&fit=crop&w=1920&q=80" 
+            src="/bg.jpg"
+            fallbackSrc="https://images.unsplash.com/photo-1503951914875-befbb7135952?auto=format&fit=crop&w=1920&q=80" 
             alt="Background Texture"
             className="w-full h-full object-cover"
         />
@@ -67,12 +65,14 @@ const Hero: React.FC = () => {
               <div className="absolute inset-0 bg-vibes-gold transform translate-x-4 translate-y-4 rounded-2xl"></div>
               
               {/* 
-                 Updated to use the imported image 'profileImg' which maps to your file 'simonyo.jpg.png'
+                 AUTOMATIC IMAGE DETECTION:
+                 Now looks for '/profile.jpg' in the public folder.
               */}
               <LocalImage 
-                src={profileImg} 
+                src="/profile.jpg"
+                fallbackSrc="https://images.unsplash.com/photo-1618077360395-f3068be8e001?auto=format&fit=crop&w=800&q=80"
                 alt="Simonyo - Lead Barber & Owner" 
-                errorLabel="Check file: simonyo.jpg.png"
+                errorLabel="Upload profile.jpg to public folder"
                 className="relative w-full h-full object-cover rounded-2xl shadow-2xl"
               />
 

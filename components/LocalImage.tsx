@@ -7,6 +7,7 @@ interface LocalImageProps {
   aos?: string;
   aosDelay?: string;
   errorLabel?: string;
+  fallbackSrc?: string; // New prop for backup image
   [key: string]: any;
 }
 
@@ -17,29 +18,35 @@ const LocalImage: React.FC<LocalImageProps> = ({
   aos, 
   aosDelay,
   errorLabel,
+  fallbackSrc,
   ...props 
 }) => {
+  const [imgSrc, setImgSrc] = useState(src);
   const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Reset state when src changes
+  // Reset state when the main src prop changes
   useEffect(() => {
-    setIsLoading(true);
+    setImgSrc(src);
     setHasError(false);
-    
-    // Safety timeout: If image hangs for more than 3 seconds, stop spinner
-    const timer = setTimeout(() => {
-        setIsLoading(false);
-    }, 3000);
-
-    return () => clearTimeout(timer);
+    setIsLoading(true);
   }, [src]);
 
-  const handleLoad = () => setIsLoading(false);
+  const handleLoad = () => {
+    setIsLoading(false);
+  };
   
   const handleError = () => {
-    setIsLoading(false);
-    setHasError(true);
+    // If we have a fallback and we aren't already displaying it, switch to fallback
+    if (fallbackSrc && imgSrc !== fallbackSrc) {
+        console.log(`Image failed: ${imgSrc}. Switching to fallback: ${fallbackSrc}`);
+        setImgSrc(fallbackSrc);
+        // We keep isLoading true until the fallback loads
+    } else {
+        // If no fallback, or fallback also failed, show error state
+        setIsLoading(false);
+        setHasError(true);
+    }
   };
 
   return (
@@ -49,7 +56,7 @@ const LocalImage: React.FC<LocalImageProps> = ({
       data-aos-delay={aosDelay}
       {...props}
     >
-      {/* Loading Spinner - Only shows while true */}
+      {/* Loading Spinner */}
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center z-20 bg-gray-50 text-vibes-gold">
            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-spin">
@@ -70,7 +77,7 @@ const LocalImage: React.FC<LocalImageProps> = ({
           </div>
       ) : (
           <img 
-              src={src} 
+              src={imgSrc} 
               alt={alt} 
               className={`w-full h-full object-cover transition-opacity duration-700 ease-out ${isLoading ? 'opacity-0' : 'opacity-100'}`}
               onLoad={handleLoad}

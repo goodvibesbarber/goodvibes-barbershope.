@@ -15,20 +15,24 @@ const About: React.FC = () => {
             
             {/* IMAGE 1: Sharp Fade (Back/Side Profile) */}
             <LocalImage 
-              src="https://images.unsplash.com/photo-1559582798-678dfc71ccd8?auto=format&fit=crop&w=800&q=80" 
+              src="/about1.jpg"
+              fallbackSrc="https://images.unsplash.com/photo-1559582798-678dfc71ccd8?auto=format&fit=crop&w=800&q=80" 
               alt="Precision fade and beard grooming" 
               className="rounded-lg shadow-lg w-full h-96 object-cover mt-12 bg-gray-100"
               aos="fade-right"
               aosDelay="100"
+              errorLabel="Upload about1.jpg to public folder"
             />
             
             {/* IMAGE 2: Shop Atmosphere / Styling (Side Profile) */}
             <LocalImage 
-              src="https://images.unsplash.com/photo-1621605815971-fbc98d665033?auto=format&fit=crop&w=800&q=80" 
+              src="/about2.jpg"
+              fallbackSrc="https://images.unsplash.com/photo-1621605815971-fbc98d665033?auto=format&fit=crop&w=800&q=80" 
               alt="Barber working with precision" 
               className="rounded-lg shadow-lg w-full h-96 object-cover bg-gray-100"
               aos="fade-right"
               aosDelay="300"
+              errorLabel="Upload about2.jpg to public folder"
             />
             
           </div>
