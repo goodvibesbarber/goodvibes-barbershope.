@@ -13,18 +13,18 @@ const About: React.FC = () => {
           
           <div className="order-2 lg:order-1 grid grid-cols-2 gap-4">
             
-            {/* IMAGE 1: Sharp Fade & Beard */}
+            {/* IMAGE 1: Sharp Fade (Back/Side Profile) */}
             <LocalImage 
-              src="https://images.unsplash.com/photo-1599351431202-6e0005a7837f?auto=format&fit=crop&w=800&q=80" 
+              src="https://images.unsplash.com/photo-1559582798-678dfc71ccd8?auto=format&fit=crop&w=800&q=80" 
               alt="Precision fade and beard grooming" 
               className="rounded-lg shadow-lg w-full h-96 object-cover mt-12 bg-gray-100"
               aos="fade-right"
               aosDelay="100"
             />
             
-            {/* IMAGE 2: Shop Atmosphere / Action */}
+            {/* IMAGE 2: Shop Atmosphere / Styling (Side Profile) */}
             <LocalImage 
-              src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?auto=format&fit=crop&w=800&q=80" 
+              src="https://images.unsplash.com/photo-1621605815971-fbc98d665033?auto=format&fit=crop&w=800&q=80" 
               alt="Barber working with precision" 
               className="rounded-lg shadow-lg w-full h-96 object-cover bg-gray-100"
               aos="fade-right"

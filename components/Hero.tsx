@@ -1,13 +1,16 @@
 import React from 'react';
 import { ChevronDown } from 'lucide-react';
 import LocalImage from './LocalImage';
+// We import the image directly to ensure Vite/Webpack bundles it correctly
+// @ts-ignore
+import profileImg from '../simonyo.jpg.png';
 
 const Hero: React.FC = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden bg-vibes-white">
       <div className="absolute inset-0 z-0 opacity-5">
         <LocalImage 
-            src="hero-bg.jpg" 
+            src="https://images.unsplash.com/photo-1503951914875-befbb7135952?auto=format&fit=crop&w=1920&q=80" 
             alt="Background Texture"
             className="w-full h-full object-cover"
         />
@@ -63,10 +66,13 @@ const Hero: React.FC = () => {
             <div className="relative aspect-[3/4] max-w-md mx-auto">
               <div className="absolute inset-0 bg-vibes-gold transform translate-x-4 translate-y-4 rounded-2xl"></div>
               
-              {/* Main Profile Image with Tap-to-Select functionality */}
+              {/* 
+                 Updated to use the imported image 'profileImg' which maps to your file 'simonyo.jpg.png'
+              */}
               <LocalImage 
-                src="hero-profile.jpg" 
-                alt="Simonyo Barber" 
+                src={profileImg} 
+                alt="Simonyo - Lead Barber & Owner" 
+                errorLabel="Check file: simonyo.jpg.png"
                 className="relative w-full h-full object-cover rounded-2xl shadow-2xl"
               />
 
